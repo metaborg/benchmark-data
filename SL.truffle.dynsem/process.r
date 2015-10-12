@@ -35,16 +35,16 @@ cd <- rbind(oracle.graal.part, oracle.jdk.part, dynsem.graal.part, dynsem.jdk.pa
 
 p.rep <- ggplot(data = cd[cd$RUNTYPE == "REPETITION",], aes(x=JVM, y=DURATION)) + geom_boxplot(aes(fill=VARIANT))
 p.rep <- p.rep + facet_wrap( ~ JVM, scales="free")
-p.rep <- p.rep + ggtitle("Fibonacci-iter")
+p.rep <- p.rep + ggtitle("Binary-Trees")
 
-pdf("plots/baseline_Fibonacci-iter_warm.pdf")
+pdf("plots/baseline_Binary-Trees_warm.pdf")
 print(p.rep)
 dev.off()
 
 p.warm <- ggplot(data = cd[cd$RUNTYPE == "WARMUP",], aes(x=JVM, y=DURATION)) + geom_boxplot(aes(fill=VARIANT))
 p.warm <- p.warm + facet_wrap( ~ JVM, scales="free")
-p.warm <- p.warm + ggtitle("Fibonacci-iter")
+p.warm <- p.warm + ggtitle("Binary-Trees")
 
-pdf("plots/baseline_Fibonacci-iter_cold.pdf")
+pdf("plots/baseline_Binary-Trees_cold.pdf")
 print(p.warm)
 dev.off()
