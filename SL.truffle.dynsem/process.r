@@ -1,9 +1,16 @@
 require(ggplot2)
 
+# Binary-Trees
 oracle.graal.file <- "data/data_20152312_132359.csv"
 oracle.jdk.file <- "data/data_20153612_123609.csv"
 dynsem.graal.file <- "data/data_20153912_133949.csv"
 dynsem.jdk.file <- "data/data_20155212_125248.csv"
+
+# Fibonacci-iter
+# oracle.graal.file <- "data/data_20152312_152306.csv"
+# oracle.jdk.file <- "data/data_20153612_123609.csv"
+# dynsem.graal.file <- "data/data_20153912_133949.csv"
+# dynsem.jdk.file <- "data/data_20155212_125248.csv"
 
 oracle.graal.raw <- read.csv(oracle.graal.file)
 oracle.jdk.raw <- read.csv(oracle.jdk.file)
