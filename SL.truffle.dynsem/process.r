@@ -1,16 +1,10 @@
 require(ggplot2)
 
-# Binary-Trees
-oracle.graal.file <- "data/data_20152312_132359.csv"
-oracle.jdk.file <- "data/data_20153612_123609.csv"
-dynsem.graal.file <- "data/data_20153912_133949.csv"
-dynsem.jdk.file <- "data/data_20155212_125248.csv"
-
 # Fibonacci-iter
-# oracle.graal.file <- "data/data_20152312_152306.csv"
-# oracle.jdk.file <- "data/data_20153612_123609.csv"
-# dynsem.graal.file <- "data/data_20153912_133949.csv"
-# dynsem.jdk.file <- "data/data_20155212_125248.csv"
+oracle.graal.file <- "data/data_20151012_173837.csv"
+oracle.jdk.file <- "data/data_20151012_173901.csv"
+dynsem.graal.file <- "data/data_20151012_174121.csv"
+dynsem.jdk.file <- "data/data_20151012_174204.csv"
 
 oracle.graal.raw <- read.csv(oracle.graal.file)
 oracle.jdk.raw <- read.csv(oracle.jdk.file)
@@ -41,10 +35,16 @@ cd <- rbind(oracle.graal.part, oracle.jdk.part, dynsem.graal.part, dynsem.jdk.pa
 
 p.rep <- ggplot(data = cd[cd$RUNTYPE == "REPETITION",], aes(x=JVM, y=DURATION)) + geom_boxplot(aes(fill=VARIANT))
 p.rep <- p.rep + facet_wrap( ~ JVM, scales="free")
-p.rep <- p.rep + ggtitle("Binary-Trees")
-p.rep
+p.rep <- p.rep + ggtitle("Fibonacci-iter")
+
+pdf("plots/baseline_Fibonacci-iter_warm.pdf")
+print(p.rep)
+dev.off()
 
 p.warm <- ggplot(data = cd[cd$RUNTYPE == "WARMUP",], aes(x=JVM, y=DURATION)) + geom_boxplot(aes(fill=VARIANT))
 p.warm <- p.warm + facet_wrap( ~ JVM, scales="free")
-p.warm <- p.warm + ggtitle("Binary-Trees")
-p.warm
+p.warm <- p.warm + ggtitle("Fibonacci-iter")
+
+pdf("plots/baseline_Fibonacci-iter_cold.pdf")
+print(p.warm)
+dev.off()
