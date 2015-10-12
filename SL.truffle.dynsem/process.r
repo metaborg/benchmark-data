@@ -1,10 +1,9 @@
 require(ggplot2)
 
-# Fibonacci-iter
-oracle.graal.file <- "data/data_20151012_173837.csv"
-oracle.jdk.file <- "data/data_20151012_173901.csv"
-dynsem.graal.file <- "data/data_20151012_174121.csv"
-dynsem.jdk.file <- "data/data_20151012_174204.csv"
+oracle.graal.file <- "data/data_20151012_174807.csv"
+oracle.jdk.file <- "data/data_20151012_180715.csv"
+dynsem.graal.file <- "data/data_20151012_194445.csv"
+dynsem.jdk.file <- "data/data_20151012_200057.csv"
 
 oracle.graal.raw <- read.csv(oracle.graal.file)
 oracle.jdk.raw <- read.csv(oracle.jdk.file)
