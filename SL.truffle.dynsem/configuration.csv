@@ -1,0 +1,2 @@
+METABORGSLREPO,METABORGSLPATH,ORACLESLREPO,ORACLESLPATH,DYNSEMREPO,GRAALREPO
+/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/.git,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp,/Users/vladvergu/tud/slde/projects/semantics/truffle-sl/.git,/Users/vladvergu/tud/slde/projects/semantics/truffle-sl/org.metaborg.com.oracle.truffle.sl,/Users/vladvergu/tud/slde/projects/semantics/dynsem/.git,/Users/vladvergu/tud/slde/software/truffle/graal-root/graal-compiler
