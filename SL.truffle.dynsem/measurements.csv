@@ -1,1 +1,6 @@
 VARIANT,VARIANTREV,DSREV,GRAALREV,BENCHMARK,GRAALDATA,JDKDATA
+Oracle,b57398e,78bf1d3,50da094850fb,Fibonacci-iter.sl,data/data_graal_20151014_15381444826289.csv,data/data_jdk_20151014_15381444826289.csv
+Oracle,b57398e,78bf1d3,50da094850fb,CallHeavy.sl,data/data_graal_20151014_15381444826325.csv,data/data_jdk_20151014_15381444826325.csv
+Oracle,b57398e,78bf1d3,50da094850fb,Vars.sl,data/data_graal_20151014_15551444827325.csv,data/data_jdk_20151014_15551444827325.csv
+Oracle,b57398e,78bf1d3,50da094850fb,Binary-Trees.sl,data/data_graal_20151014_15561444827364.csv,data/data_jdk_20151014_15561444827364.csv
+Oracle,b57398e,78bf1d3,50da094850fb,While.sl,data/data_graal_20151014_16271444829232.csv,data/data_jdk_20151014_16271444829232.csv

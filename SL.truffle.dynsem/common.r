@@ -29,6 +29,9 @@ graal.rev <- gethgrev(graal.repo)
 # Benchmarks file
 benchmarks <- read.csv("benchmarks.csv")
 
-# Data file
+# Measurements file
 measurements.file <- "measurements.csv"
 measurements <- read.csv(measurements.file)
+
+# Plots dir
+plots.dir <- "plots"
