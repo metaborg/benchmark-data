@@ -27,13 +27,6 @@ runbenchmark <- function(benchmark, variant, variantrev, variantpath) {
   newrow <- data.frame(variant, variantrev, dynsem.rev, graal.rev, paste(benchmark[1]), datafile.graal.rel, datafile.jdk.rel)
   write.table(newrow, file=measurements.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
 
-
-  # Fibonacci-iter.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-  # CallHeavy.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-  # Vars.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-  # BinaryTrees.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-  # While.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-
 }
 
 # run Oracle benchmarks
