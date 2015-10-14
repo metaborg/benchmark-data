@@ -13,6 +13,4 @@ cd $VARIANTPATH
 
 mvn exec:exec -Dinputfile=$INPUTARG -Dgraaldatafile=$GRAALOUT -Djdkdatafile=$JDKOUT
 
-echo $INPUTARG $GRAALOUT $JDKOUT
-
 cd $CURDIR
