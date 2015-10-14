@@ -1,6 +1,2 @@
 BENCHMARKNAME,BECHMARKPATH
-BinaryTrees.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-CallHeavy.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-Fibonacci.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-Vars.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
-While.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
+Fibonacci-iter.sl,/Users/vladvergu/tud/slde/projects/semantics/metaborg-sl/org.metaborg.lang.sl.interp/src/test/resources
