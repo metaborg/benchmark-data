@@ -7,8 +7,11 @@ runbenchmark <- function(benchmark, variant, variantrev, variantpath) {
   timestamp.datepart <- format(time, "%Y%m%d")
   timestamp.timepart <- format(time, "%H%M%s")
 
-  datafile.graal <- paste(getwd(), "/data/data_graal_", timestamp.datepart, "_", timestamp.timepart, ".csv", sep="")
-  datafile.jdk <- paste(getwd(), "/data/data_jdk_", timestamp.datepart, "_", timestamp.timepart, ".csv", sep="")
+  datafile.graal.rel <- paste("data/data_graal_", timestamp.datepart, "_", timestamp.timepart, ".csv", sep="")
+  datafile.jdk.rel <- paste("data/data_jdk_", timestamp.datepart, "_", timestamp.timepart, ".csv", sep="")
+
+  datafile.graal <- paste(getwd(), "/", datafile.graal.rel, sep="")
+  datafile.jdk <- paste(getwd(), "/", datafile.jdk.rel, sep="")
 
   inputarg <- paste("\"", benchmark[2],"/", benchmark[1], "\"", sep="")
   graaloutarg <- paste("\"", datafile.graal, "\"", sep="")
@@ -20,7 +23,8 @@ runbenchmark <- function(benchmark, variant, variantrev, variantpath) {
     print(paste("Error running",benchmark[1],"on language", variant))
     quit("no", status=runres)
   }
-  newrow <- data.frame(variant, variantrev, dynsem.rev, graal.rev, paste(benchmark[1]), datafile.graal, datafile.jdk)
+
+  newrow <- data.frame(variant, variantrev, dynsem.rev, graal.rev, paste(benchmark[1]), datafile.graal.rel, datafile.jdk.rel)
   write.table(newrow, file=measurements.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
 
 
