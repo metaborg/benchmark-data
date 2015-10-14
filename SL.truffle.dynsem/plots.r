@@ -51,6 +51,7 @@ createplot <- function(dataset, warmruns=TRUE) {
   plot <- plot + facet_wrap( ~ BENCHMARK, scales="free")
   plot <- plot + xlab("VM Type") + ylab("Time (ms)")
   plot <- plot + guides(fill=guide_legend(title=NULL))
+  plot <- plot + theme(legend.position="top")
 
   if(warmruns){
     plot <- plot + ggtitle("Warm runs")
