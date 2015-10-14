@@ -29,8 +29,11 @@ runbenchmark <- function(benchmark, variant, variantrev, variantpath) {
 
 }
 
-# run Oracle benchmarks
-apply(benchmarks, 1, runbenchmark, "Oracle", sl.oracle.rev, sl.oracle.path)
+createbaseline <- function() {
+  # run Oracle benchmarks
+  apply(benchmarks, 1, runbenchmark, "Oracle", sl.oracle.rev, sl.oracle.path)
+}
 
-# run DS benchmarks
-#apply(benchmarks, 1, runbenchmark, "DynSem", sl.metaborg.rev)
+createmeasurement <- function() {
+  apply(benchmarks, 1, runbenchmark, "DynSem", sl.metaborg.rev, sl.metaborg.path)
+}
