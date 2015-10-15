@@ -39,6 +39,23 @@ aggregatedata <- function() {
   return(dataset)
 }
 
+createplots <- function(dataset, column, size=4, warmruns=TRUE) {
+  types <- unique(dataset[column])
+  types <- types[with(types, order(types)), ]
+  ntypes <- length(types)
+  nparts <- ceiling(ntypes / size)
+  plots <- list()
+  for(i in c(0:(nparts - 1))) {
+    sidx <- i * size + 1
+    eidx <- min((i+1) * size, ntypes)
+    colvals <- types[c(sidx:eidx)]
+    subset <- dataset[which(dataset[,column] %in% colvals), ]
+    plot <- createplot(subset, warmruns)
+    plots <- list(plots, plot)
+  }
+  return(plots)
+}
+
 createplot <- function(dataset, warmruns=TRUE) {
   require(ggplot2)
   if(warmruns) {
@@ -46,6 +63,7 @@ createplot <- function(dataset, warmruns=TRUE) {
   } else {
     runtype = "WARMUP"
   }
+
   plot <- ggplot(data = dataset[dataset$RUNTYPE == runtype,], aes(x=JVM, y=DURATION))
   plot <- plot + geom_boxplot(aes(fill=VARIANT))
   plot <- plot + facet_wrap( ~ BENCHMARK, scales="free")
@@ -62,15 +80,16 @@ createplot <- function(dataset, warmruns=TRUE) {
   return(plot)
 }
 
-saveplots <- function () {
-  data <- aggregatedata()
-  plot.warm <- createplot(data, TRUE)
-  plot.cold <- createplot(data, FALSE)
-  pdf(paste(plots.dir, "/plot_warm.pdf", sep=""))
-  print(plot.warm)
+saveplot <- function(plot, filename="plot") {
+  pdf(paste(plots.dir, "/", filename, ".pdf", sep=""))
+  print(plot)
   dev.off()
+}
 
-  pdf(paste(plots.dir, "/plot_cold.pdf", sep=""))
-  print(plot.cold)
-  dev.off()
+runplots <- function() {
+  data <- aggregatedata()
+  plots.warm <- createplots(data, column="BENCHMARK", warmruns=TRUE)
+  plots.cold <- createplots(data, column="BENCHMARK", warmruns=FALSE)
+  saveplot(plots.warm, filename="plot_warm")
+  saveplot(plots.cold, filename="plot_cold")
 }
