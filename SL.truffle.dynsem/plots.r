@@ -63,8 +63,9 @@ createplot <- function(dataset, warmruns=TRUE) {
   } else {
     runtype = "WARMUP"
   }
+  subset <- dataset[dataset$RUNTYPE == runtype,]
 
-  plot <- ggplot(data = dataset[dataset$RUNTYPE == runtype,], aes(x=JVM, y=DURATION))
+  plot <- ggplot(data = subset, aes(x=JVM, y=DURATION))
   plot <- plot + geom_boxplot(aes(fill=VARIANT))
   plot <- plot + facet_wrap( ~ BENCHMARK, scales="free")
   plot <- plot + xlab("VM Type") + ylab("Time (ms)")
