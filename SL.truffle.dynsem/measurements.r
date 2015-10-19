@@ -1,5 +1,33 @@
 source("common.r")
 
+runmeasurement <- function(measurementrow) {
+  time <- Sys.time()
+
+  timestamp.datepart <- format(time, "%Y%m%d")
+  timestamp.timepart <- format(time, "%H%M%s")
+  datafile.graal.rel <- paste("data/data_graal_", timestamp.datepart, "_", timestamp.timepart, ".csv", sep="")
+  datafile.jdk.rel <- paste("data/data_jdk_", timestamp.datepart, "_", timestamp.timepart, ".csv", sep="")
+  datafile.graal <- paste(getwd(), "/", datafile.graal.rel, sep="")
+  datafile.jdk <- paste(getwd(), "/", datafile.jdk.rel, sep="")
+
+  inputarg <- paste("\"", benchmarks.path,"/", measurementrow["BENCHMARK"], "\"", sep="")
+  graaloutarg <- paste("\"", datafile.graal, "\"", sep="")
+  jdkoutarg <- paste("\"", datafile.jdk, "\"", sep="")
+
+  runres <- system2("./runner.sh", args=c(paste(getvariantpath(measurementrow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
+
+  if(runres != 0) {
+    print(paste("Error running",measurementrow["BENCHMARK"],"on language", measurementrow["VARIANT"]))
+    quit("no", status=runres)
+  }
+  measurementrow["GRAALDATA"] <- datafile.graal.rel
+  measurementrow["JDKDATA"] <- datafile.jdk.rel
+
+  return(measurementrow)
+}
+
+
+
 runbenchmark <- function(benchmark, variant, variantrev, variantpath) {
   print(paste("Running",benchmark[1], "from path", benchmark[2], "on language", variant))
   time <- Sys.time()
@@ -19,7 +47,7 @@ runbenchmark <- function(benchmark, variant, variantrev, variantpath) {
 
   runres <- system2("./runner.sh", args=c(paste(variantpath), inputarg, graaloutarg, jdkoutarg))
 
-  if(runres != 0){
+  if(runres != 0) {
     print(paste("Error running",benchmark[1],"on language", variant))
     quit("no", status=runres)
   }
