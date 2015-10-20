@@ -76,7 +76,7 @@ compileimplementations <- function(datarow) {
   # compilegraal()
 
   # compile DynSem
-  compiledynsem()
+  # compiledynsem()
 
   # compile language implementation
   compilevariant(datarow["VARIANT"])
@@ -127,5 +127,13 @@ compilesloracle <- function() {
 }
 
 compilesldynsem <- function() {
-  quitonfail(42, "Not implemented")
+  lang.dir = paste(sl.metaborg.repo, "/org.metaborg.lang.sl", sep="")
+  interp.dir = paste(sl.metaborg.repo, "/org.metaborg.lang.sl.interp", sep="")
+  res = system2("cp", args=c("auxfiles/sl-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "clean")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "compile")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Metaborg SL (language) compilation failed")
+
+  quitonfail(ifelse(res, 0, 1), "Metaborg SL (interpreter) compilation failed")
 }
