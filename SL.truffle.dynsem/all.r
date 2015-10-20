@@ -76,7 +76,7 @@ compileimplementations <- function(datarow) {
   # compilegraal()
 
   # compile DynSem
-  # compiledynsem()
+  compiledynsem()
 
   # compile language implementation
   compilevariant(datarow["VARIANT"])
@@ -90,7 +90,23 @@ compilegraal <- function() {
 }
 
 compiledynsem <- function() {
-  quitonfail(42, "Not implemented")
+  framework.dir = paste(dynsem.repo, "/org.metaborg.meta.interpreter.framework", sep="")
+  res = system2("./mvn-invoke.sh", args=c(framework.dir, "clean")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(framework.dir, "install")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Compilation of interpreter framework failed")
+
+  lang.dir = paste(dynsem.repo, "/dynsem", sep="")
+  res = system2("cp", args=c("auxfiles/dynsem-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
+  res = res && system2("cp", args=c("auxfiles/MANIFEST.MF", paste(lang.dir, "/META-INF/MANIFEST.MF", sep=""))) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Copy failed")
+
+  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
+  quitonfail(ifelse(res, 0, 1), "Clean failed")
+  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "compile")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Compilation of DynSem failed")
 }
 
 compilevariant <- function(variant) {
