@@ -19,11 +19,14 @@ rerunall <- function() {
   truncatedata(measurements)
   writemeasurements(measurements)
 
-  measurements <- runexperiment(measurements)
+  temp.file <- "temp.csv"
+  measurements <- runexperiment(measurements, tempfile)
   writemeasurements(measurements)
+
+  rmfile("temp.csv")
 }
 
-runexperiment <- function(datarow) {
+runexperiment <- function(datarow, temp.file) {
   time <- Sys.time()
 
   timestamp.datepart <- format(time, "%Y%m%d")
@@ -39,12 +42,14 @@ runexperiment <- function(datarow) {
 
   switchrevisions(datarow)
   initrevs()
-  # compileimplementations(datarow)
+  compileimplementations(datarow)
 
   # runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
 
   datarow["GRAALDATA"] = datafile.graal.rel
   datarow["JDKDATA"] = datafile.jdk.rel
+
+  write.table(datarow, file=temp.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
   return(datarow)
 }
 
@@ -55,7 +60,7 @@ switchrevisions <- function(datarow) {
     switchgitrev(sl.oracle.repo, unlist(datarow["VARIANTREV"]))
   } else if(datarow["VARIANT"] == "DynSem") {
     # switch git revision
-    # switchgitrev(sl.metaborg.repo, unlist(datarow["VARIANTREV"]))
+    switchgitrev(sl.metaborg.repo, unlist(datarow["VARIANTREV"]))
   } else {
     quitonfail(-1, paste("Unknown implementation variant:", datarow["VARIANT"]))
   }
@@ -68,10 +73,10 @@ switchrevisions <- function(datarow) {
 
 compileimplementations <- function(datarow) {
   # compile graal implementation
-  compilegraal()
+  # compilegraal()
 
   # compile DynSem
-  compiledynsem()
+  # compiledynsem()
 
   # compile language implementation
   compilevariant(datarow["VARIANT"])
@@ -79,9 +84,9 @@ compileimplementations <- function(datarow) {
 
 compilegraal <- function() {
   res = system2("mx", args=c("-p", paste(graal.repo), "build")) == 0
-  res = system2("mx", args=c("-p", paste(graal.repo), "maven-install")) == 0
+  res = res && system2("mx", args=c("-p", paste(graal.repo), "maven-install")) == 0
 
-  quitonfail(res, "Building graal failed")
+  quitonfail(ifelse(res, 0, 1), "Building graal failed")
 }
 
 compiledynsem <- function() {
@@ -99,7 +104,10 @@ compilevariant <- function(variant) {
 }
 
 compilesloracle <- function() {
-  quitonfail(42, "Not implemented")
+  res = system2("./mvn-invoke.sh", args=c(paste(sl.oracle.path), "clean")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(paste(sl.oracle.path), "compile")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Oracle SL compilation failed")
 }
 
 compilesldynsem <- function() {
