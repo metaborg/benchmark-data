@@ -45,6 +45,10 @@ loadmeasurements <- function() {
   measurements <<- read.csv(measurements.file)
 }
 
+writemeasurements <- function() {
+  write.table(measurements, file=measurements.file, quote=F, append=F, row.names=F, col.names=T,  sep=",")
+}
+
 truncatedataall <- function(measurements) {
   return(apply(measurements, 1, truncatedatarow))
 }
