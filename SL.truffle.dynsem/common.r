@@ -15,6 +15,7 @@ source("library.r")
 initconfig <- function() {
   sl.metaborg.repo <<- unlist(config[1, "METABORGSLREPO"])
   sl.oracle.repo <<- unlist(config[1, "ORACLESLREPO"])
+  mx.repo <<- unlist(config[1, "MXREPO"])
   dynsem.repo <<- unlist(config[1, "DYNSEMREPO"])
   graal.repo <<- unlist(config[1, "GRAALREPO"])
   sl.metaborg.path <<- unlist(config[1, "METABORGSLPATH"])
@@ -38,28 +39,22 @@ initrevs <- function() {
 }
 
 loadbenchmarks <- function() {
-  benchmarks <<- read.csv(benchmarks.file)
+  return(read.csv(benchmarks.file))
 }
 
 loadmeasurements <- function() {
-  measurements <<- read.csv(measurements.file)
+  return(read.csv(measurements.file))
 }
 
-writemeasurements <- function() {
+writemeasurements <- function(measurements) {
   write.table(measurements, file=measurements.file, quote=F, append=F, row.names=F, col.names=T,  sep=",")
 }
 
-truncatedataall <- function(measurements) {
-  return(apply(measurements, 1, truncatedatarow))
+rmdatafiles <- function(measurements) {
+  apply(measurements, 1, function(row) { rmfile(paste(row["GRAALDATA"])); rmfile(paste(row["JDKDATA"])) })
 }
 
-truncatedatarow <- function(row) {
-  graaldata <- row["GRAALDATA"]
-  jdkdata <- row["JDKDATA"]
-  rmfile(jdkdata)
-  rmfile(graaldata)
-
-  row["GRAALDATA"] <- ""
-  row["JDKDATA"] <- ""
-  return(row)
+truncatedata <- function(measurements) {
+  measurements["GRAALDATA"] <- ""
+  measurements["JDKDATA"] <- ""
 }

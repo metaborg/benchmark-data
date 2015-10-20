@@ -15,7 +15,24 @@ gethgrev <- function(path) {
   return(rev)
 }
 
+switchgraalrev <- function(graalpath, mxpath, rev) {
+  res = system2("hg", args=c("-R", paste(mxpath), "pull")) == 0
+  res = res && system2("hg", args=c("-R", paste(mxpath), "update")) == 0
+  res = res && system2("mx", args=c("-p", paste(graalpath), "spull")) == 0
+  res = res && system2("hg", args=c("-R", paste(graalpath), "update", "-r", rev)) == 0
+  res = res && system2("mx", args=c("-p", paste(graalpath), "sforceimports")) == 0
+
+  quitonfail(res, paste("Graal switching failed"))
+}
+
+quitonfail <- function(exit, msg="Command failed") {
+  if(exit != 0) {
+    print(paste(msg))
+    quit("no", status=exit)
+  }
+}
+
 rmfile <- function(path) {
-  res = system2("rm", "-f", path)
+  res = system2("rm", path)
   return(res)
 }
