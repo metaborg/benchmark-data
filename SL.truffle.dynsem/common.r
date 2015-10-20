@@ -23,14 +23,6 @@ initconfig <- function() {
   benchmarks.path <<- unlist(config[1, "BECHMARKPATH"])
 }
 
-getvariantpath <- function(variant) {
-  if(variant == "Oracle") {
-    return(sl.oracle.path)
-  } else if(variant == "DynSem") {
-    return(sl.metaborg.path)
-  }
-}
-
 initrevs <- function() {
   sl.metaborg.rev <<- getgitrev(sl.metaborg.repo)
   sl.oracle.rev <<- getgitrev(sl.oracle.repo)
@@ -55,6 +47,15 @@ rmdatafiles <- function(measurements) {
 }
 
 truncatedata <- function(measurements) {
-  measurements["GRAALDATA"] <- ""
-  measurements["JDKDATA"] <- ""
+  measurements["GRAALDATA"] = ""
+  measurements["JDKDATA"] = ""
+  return(measurements)
+}
+
+getvariantpath <- function(variant) {
+  if(variant == "Oracle") {
+    return(sl.oracle.path)
+  } else if(variant == "DynSem") {
+    return(sl.metaborg.path)
+  }
 }
