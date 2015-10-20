@@ -33,7 +33,7 @@ switchgraalrev <- function(graalpath, mxpath, rev) {
 quitonfail <- function(exitstatus, msg="Command failed") {
   if(exitstatus != 0) {
     print(paste(msg))
-    quit("no", status=exitstatus)
+    # quit("no", status=exitstatus)
   }
 }
 

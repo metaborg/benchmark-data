@@ -99,6 +99,7 @@ compiledynsem <- function() {
   lang.dir = paste(dynsem.repo, "/dynsem", sep="")
   res = system2("cp", args=c("auxfiles/dynsem-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
   res = res && system2("cp", args=c("auxfiles/MANIFEST.MF", paste(lang.dir, "/META-INF/MANIFEST.MF", sep=""))) == 0
+  res = res && system2("cp", args=c("auxfiles/GenInterp.java", paste(lang.dir, "/editor/java/dynsem/strategies/GenInterp.java", sep=""))) == 0
 
   quitonfail(ifelse(res, 0, 1), "Copy failed")
 
@@ -132,8 +133,17 @@ compilesldynsem <- function() {
   res = system2("cp", args=c("auxfiles/sl-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
   res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "clean")) == 0
   res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "compile")) == 0
-
   quitonfail(ifelse(res, 0, 1), "Metaborg SL (language) compilation failed")
+
+  dynsem.mainjar = paste(dynsem.repo, "/include/ds.jar", sep="")
+  dynsem.javajar = paste(dynsem.repo, "/include/ds-java.jar", sep="")
+  classpath = c("-cp", paste("auxfiles/strategoxt-min-jar-1.5.0.jar", dynsem.mainjar, dynsem.javajar, sep=":"))
+
+  sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl", sep="")
+  sl.metaborg.spec = paste(sl.metaborg.proj, "/trans/semantics/sl.ds", sep="")
+  args = c(classpath, "dynsem.strategies.GenInterp", sl.metaborg.spec, sl.metaborg.proj)
+
+  res = system2("java", args=args)
 
   quitonfail(ifelse(res, 0, 1), "Metaborg SL (interpreter) compilation failed")
 }
