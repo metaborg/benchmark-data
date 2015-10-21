@@ -108,6 +108,7 @@ compileimplementations <- function(datarow) {
 compilegraal <- function() {
   res = system2("mx", args=c("-p", paste(graal.repo), "build")) == 0
   res = res && system2("mx", args=c("-p", paste(graal.repo), "maven-install")) == 0
+  res = res && system2("mx", args=c("-p", paste(graal.repo, "/../truffle/", sep=""), "maven-install")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Building graal failed")
 }
