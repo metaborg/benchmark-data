@@ -22,7 +22,11 @@ rerunall <- function() {
   writemeasurements(measurements)
 
   temp.file <- "temp.csv"
-  measurements <- runexperiment(measurements, tempfile)
+  # measurements <- runexperiment(measurements, temp.file)
+  for(i in seq(1,nrow(measurements))) {
+    measurements[i,] = runexperiment(measurements[1,], temp.file)
+  }
+  # runexperiment(measurements[1,], temp.file)
   writemeasurements(measurements)
 
   rmfile("temp.csv")
@@ -106,7 +110,8 @@ compileimplementations <- function(datarow) {
 }
 
 compilegraal <- function() {
-  res = system2("mx", args=c("-p", paste(graal.repo), "build")) == 0
+  res = system2("mx", args=c("-p", paste(graal.repo), "clean")) == 0
+  res = res && system2("mx", args=c("-p", paste(graal.repo), "build")) == 0
   res = res && system2("mx", args=c("-p", paste(graal.repo), "maven-install")) == 0
   res = res && system2("mx", args=c("-p", paste(graal.repo, "/../truffle/", sep=""), "maven-install")) == 0
 
