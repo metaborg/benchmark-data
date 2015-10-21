@@ -5,6 +5,7 @@ source("measurements.r")
 fakeinit <- function () {
   initconfig()
   initrevs()
+  fetchdependencies()
   return(truncatedata(loadmeasurements()))
 }
 
@@ -45,7 +46,7 @@ runexperiment <- function(datarow, temp.file) {
   initrevs()
   compileimplementations(datarow)
 
-  # runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
+  runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
 
   datarow["GRAALDATA"] = datafile.graal.rel
   datarow["JDKDATA"] = datafile.jdk.rel
@@ -76,7 +77,7 @@ fetchdependencies <- function() {
   version = "1.5.0-SNAPSHOT"
 
   # download strategoxt-min
-  res = system2("./mvn-download.sh", args=c(".", "org.metaborg", "strategoxt-min-jar", version)) == 0
+  res = system2("./mvn-download.sh", args=c(".", "org.metaborg", "strategoxt-jar", version)) == 0
 
   # download sunshine
   res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.sunshine", version)) == 0
@@ -95,10 +96,10 @@ fetchdependencies <- function() {
 
 compileimplementations <- function(datarow) {
   # compile graal implementation
-  # compilegraal()
+  compilegraal()
 
   # compile DynSem
-  # compiledynsem()
+  compiledynsem()
 
   # compile language implementation
   compilevariant(datarow["VARIANT"])
@@ -127,7 +128,7 @@ compiledynsem <- function() {
 
   res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
   quitonfail(ifelse(res, 0, 1), "Clean failed")
-  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "compile")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "package")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Compilation of DynSem failed")
 }
@@ -154,18 +155,25 @@ compilesldynsem <- function() {
   interp.dir = paste(sl.metaborg.repo, "/org.metaborg.lang.sl.interp", sep="")
   res = system2("cp", args=c("auxfiles/sl-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
   res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "clean")) == 0
+
+  sunshineclasspath = c("-jar", "target/dependency/org.metaborg.sunshine-1.5.0-SNAPSHOT.jar")
+  sunshineconf = c("--auto-lang", "target/dependency/sdf3/include", "--non-incremental")
+  sunshineinput = c("--project", lang.dir, "--builder", "\"Generate all files\"", "--build-on-all", "syntax/")
+  res = res && system2("java", args=c(sunshineclasspath, sunshineinput, sunshineconf)) == 0
+
   res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "compile")) == 0
   quitonfail(ifelse(res, 0, 1), "Metaborg SL (language) compilation failed")
 
-  dynsem.mainjar = paste(dynsem.repo, "/include/ds.jar", sep="")
-  dynsem.javajar = paste(dynsem.repo, "/include/ds-java.jar", sep="")
-  classpath = c("-cp", paste("target/dependency/strategoxt-min-jar-1.5.0.jar", dynsem.mainjar, dynsem.javajar, sep=":"))
+  dynsem.mainjar = paste(dynsem.repo, "/dynsem/include/ds.jar", sep="")
+  dynsem.javajar = paste(dynsem.repo, "/dynsem/include/ds-java.jar", sep="")
+  classpath = c("-cp", paste("target/dependency/strategoxt-jar-1.5.0-SNAPSHOT.jar", dynsem.mainjar, dynsem.javajar, sep=":"))
 
-  sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl", sep="")
+  sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl/", sep="")
   sl.metaborg.spec = paste(sl.metaborg.proj, "/trans/semantics/sl.ds", sep="")
+
   args = c(classpath, "dynsem.strategies.GenInterp", sl.metaborg.spec, sl.metaborg.proj)
 
-  res = system2("java", args=args)
+  res = system2("java", args=args) == 0
 
   quitonfail(ifelse(res, 0, 1), "Metaborg SL (interpreter) compilation failed")
 }
