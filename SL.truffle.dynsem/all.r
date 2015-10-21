@@ -25,9 +25,10 @@ rerunall <- function() {
   # measurements <- runexperiment(measurements, temp.file)
   for(i in seq(1,nrow(measurements))) {
     measurements[i,] = runexperiment(measurements[1,], temp.file)
+    writemeasurements(measurements)
   }
   # runexperiment(measurements[1,], temp.file)
-  writemeasurements(measurements)
+  # writemeasurements(measurements)
 
   rmfile("temp.csv")
 }
