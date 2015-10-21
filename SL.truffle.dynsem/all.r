@@ -38,7 +38,7 @@ runexperiment <- function(datarow, temp.file) {
   datafile.graal <- paste(getwd(), "/", datafile.graal.rel, sep="")
   datafile.jdk <- paste(getwd(), "/", datafile.jdk.rel, sep="")
 
-  inputarg <- paste("\"", benchmarks.path,"/", datarow["BENCHMARK"], "\"", sep="")
+  inputarg <- paste("\"", benchmarks.path,"/", unlist(datarow["BENCHMARK"]), "\"", sep="")
   graaloutarg <- paste("\"", datafile.graal, "\"", sep="")
   jdkoutarg <- paste("\"", datafile.jdk, "\"", sep="")
 
