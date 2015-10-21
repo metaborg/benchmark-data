@@ -18,7 +18,7 @@ rerunall <- function() {
   benchmarks <- loadbenchmarks()
 
   rmdatafiles(measurements)
-  truncatedata(measurements)
+  measurements <- truncatedata(measurements)
   writemeasurements(measurements)
 
   temp.file <- "temp.csv"
