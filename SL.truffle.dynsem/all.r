@@ -12,6 +12,7 @@ fakeinit <- function () {
 rerunall <- function() {
   initconfig()
   initrevs()
+  fetchdependencies()
   measurements <- loadmeasurements()
   benchmarks <- loadbenchmarks()
 
@@ -69,6 +70,27 @@ switchrevisions <- function(datarow) {
 
   # switch Graal repo
   switchgraalrev(graal.repo, mx.repo, unlist(datarow["GRAALREV"]))
+}
+
+fetchdependencies <- function() {
+  version = "1.5.0-SNAPSHOT"
+
+  # download strategoxt-min
+  res = system2("./mvn-download.sh", args=c(".", "org.metaborg", "strategoxt-min-jar", version)) == 0
+
+  # download sunshine
+  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.sunshine", version)) == 0
+
+  # download sdf3
+  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.strategoxt.imp.editors.template", version)) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Download dependencies failed")
+
+  res = rmfile("target/dependency/sdf3") == 0
+  res = res && system2("mkdir", args=c("-p", "target/dependency/sdf3")) == 0
+  res = res && system2("unzip", args=c("target/dependency/org.strategoxt.imp.editors.template-1.5.0-SNAPSHOT.jar", "-d", "target/dependency/sdf3/")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Failed to expand SDF3 language")
 }
 
 compileimplementations <- function(datarow) {
@@ -137,7 +159,7 @@ compilesldynsem <- function() {
 
   dynsem.mainjar = paste(dynsem.repo, "/include/ds.jar", sep="")
   dynsem.javajar = paste(dynsem.repo, "/include/ds-java.jar", sep="")
-  classpath = c("-cp", paste("auxfiles/strategoxt-min-jar-1.5.0.jar", dynsem.mainjar, dynsem.javajar, sep=":"))
+  classpath = c("-cp", paste("target/dependency/strategoxt-min-jar-1.5.0.jar", dynsem.mainjar, dynsem.javajar, sep=":"))
 
   sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl", sep="")
   sl.metaborg.spec = paste(sl.metaborg.proj, "/trans/semantics/sl.ds", sep="")

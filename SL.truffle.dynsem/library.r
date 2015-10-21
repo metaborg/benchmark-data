@@ -38,6 +38,6 @@ quitonfail <- function(exitstatus, msg="Command failed") {
 }
 
 rmfile <- function(path) {
-  res = system2("rm", path)
+  res = system2("rm", args=c("-rf", path))
   return(res)
 }
