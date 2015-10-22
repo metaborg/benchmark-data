@@ -2,13 +2,6 @@ source("common.r")
 source("library.r")
 source("measurements.r")
 
-fakeinit <- function () {
-  initconfig()
-  initrevs()
-  fetchdependencies()
-  return(truncatedata(loadmeasurements()))
-}
-
 # Re-run all measurements
 rerunall <- function() {
   initconfig()
@@ -22,13 +15,30 @@ rerunall <- function() {
   writemeasurements(measurements)
 
   temp.file <- "temp.csv"
-  # measurements <- runexperiment(measurements, temp.file)
+
   for(i in seq(1,nrow(measurements))) {
     measurements[i,] = runexperiment(measurements[1,], temp.file)
     writemeasurements(measurements)
   }
-  # runexperiment(measurements[1,], temp.file)
-  # writemeasurements(measurements)
+
+  rmfile("temp.csv")
+}
+
+runpending <- function() {
+  initconfig()
+  initrevs()
+  fetchdependencies()
+  measurements <- loadmeasurements()
+  benchmarks <- loadbenchmarks()
+
+  temp.file <- "temp.csv"
+
+  for(i in seq(1,nrow(measurements))) {
+    if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
+      measurements[i,] = runexperiment(measurements[1,], temp.file)
+      writemeasurements(measurements)
+    }
+  }
 
   rmfile("temp.csv")
 }
