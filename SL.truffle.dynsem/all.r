@@ -17,7 +17,7 @@ rerunall <- function() {
   temp.file <- "temp.csv"
 
   for(i in seq(1,nrow(measurements))) {
-    measurements[i,] = runexperiment(measurements[1,], temp.file)
+    measurements[i,] = runexperiment(measurements[i,], temp.file)
     writemeasurements(measurements)
   }
 
@@ -35,7 +35,7 @@ runpending <- function() {
 
   for(i in seq(1,nrow(measurements))) {
     if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
-      measurements[i,] = runexperiment(measurements[1,], temp.file)
+      measurements[i,] = runexperiment(measurements[i,], temp.file)
       writemeasurements(measurements)
     }
   }
