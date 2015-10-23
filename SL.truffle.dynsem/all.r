@@ -43,6 +43,24 @@ runpending <- function() {
   rmfile("temp.csv")
 }
 
+runrows <- function(begin, end) {
+  initconfig()
+  initrevs()
+  fetchdependencies()
+  measurements <- loadmeasurements()
+  benchmarks <- loadbenchmarks()
+
+  temp.file <- "temp.csv"
+
+  for(i in seq(begin, end)) {
+    measurements[i,] = runexperiment(measurements[i,], temp.file)
+    writemeasurements(measurements)
+  }
+
+  rmfile("temp.csv")
+}
+
+
 runexperiment <- function(datarow, temp.file) {
   time <- Sys.time()
 
