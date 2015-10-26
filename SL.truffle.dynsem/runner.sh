@@ -11,6 +11,8 @@ CURDIR=`pwd`
 
 cd $VARIANTPATH
 
+echo "Running mvn exec:exec -Dinputfile=$INPUTARG -Dgraaldatafile=$GRAALOUT -Djdkdatafile=$JDKOUT"
+
 mvn exec:exec -Dinputfile=$INPUTARG -Dgraaldatafile=$GRAALOUT -Djdkdatafile=$JDKOUT
 
 cd $CURDIR
