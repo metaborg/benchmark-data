@@ -24,6 +24,36 @@ rerunall <- function() {
   rmfile("temp.csv")
 }
 
+createoraclemeasurement <- function() {
+  initconfig()
+  initrevs()
+  measurements <- loadmeasurements()
+  benchmarks <- loadbenchmarks()
+
+  for(i in seq(1, nrow(benchmarks))) {
+    t <- nrow(measurements)
+    newrow <- c("Oracle", sl.oracle.rev, dynsem.rev, graal.rev, benchmarks[i,], "", "")
+    measurements <- rbind(measurements[1:nrow(measurements),], newrow)
+  }
+  writemeasurements(measurements)
+}
+
+
+createdynsemmeasurement <- function() {
+  initconfig()
+  initrevs()
+  measurements <- loadmeasurements()
+  benchmarks <- loadbenchmarks()
+
+  for(i in seq(1, nrow(benchmarks))) {
+    t <- nrow(measurements)
+    newrow <- c("DynSem", sl.metaborg.rev, dynsem.rev, graal.rev, benchmarks[i,], "", "")
+    measurements <- rbind(measurements[1:nrow(measurements),], newrow)
+  }
+  writemeasurements(measurements)
+}
+
+
 # runpending <- function() {
 #   initconfig()
 #   initrevs()

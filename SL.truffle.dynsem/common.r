@@ -31,11 +31,11 @@ initrevs <- function() {
 }
 
 loadbenchmarks <- function() {
-  return(read.csv(benchmarks.file))
+  return(read.csv(benchmarks.file, stringsAsFactors=FALSE))
 }
 
 loadmeasurements <- function() {
-  return(read.csv(measurements.file))
+  return(read.csv(measurements.file, stringsAsFactors=FALSE))
 }
 
 writemeasurements <- function(measurements) {
