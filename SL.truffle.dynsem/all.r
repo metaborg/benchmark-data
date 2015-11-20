@@ -63,8 +63,14 @@ runpending <- function() {
 
   temp.file <- "temp.csv"
 
+  compiled <- FALSE
+
   for(i in seq(1,nrow(measurements))) {
     if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
+      if(!compiled){
+        compileimplementations(measurements[i,])
+        compiled <- TRUE
+      }
       measurements[i,] <- runexperiment(measurements[i,], temp.file)
       writemeasurements(measurements)
     }
@@ -89,7 +95,7 @@ runexperiment <- function(datarow, temp.file) {
 
   switchrevisions(datarow)
   initrevs()
-  compileimplementations(datarow)
+  # compileimplementations(datarow)
 
   runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
 
