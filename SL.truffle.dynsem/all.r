@@ -54,24 +54,24 @@ createdynsemmeasurement <- function() {
 }
 
 
-# runpending <- function() {
-#   initconfig()
-#   initrevs()
-#   fetchdependencies()
-#   measurements <- loadmeasurements()
-#   benchmarks <- loadbenchmarks()
-#
-#   temp.file <- "temp.csv"
-#
-#   for(i in seq(1,nrow(measurements))) {
-#     if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
-#       measurements[i,] = runexperiment(measurements[i,], temp.file)
-#       writemeasurements(measurements)
-#     }
-#   }
-#
-#   rmfile("temp.csv")
-# }
+runpending <- function() {
+  initconfig()
+  initrevs()
+  fetchdependencies()
+  measurements <- loadmeasurements()
+  benchmarks <- loadbenchmarks()
+
+  temp.file <- "temp.csv"
+
+  for(i in seq(1,nrow(measurements))) {
+    if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
+      measurements[i,] <- runexperiment(measurements[i,], temp.file)
+      writemeasurements(measurements)
+    }
+  }
+
+  rmfile("temp.csv")
+}
 
 # runrows <- function(begin, end) {
 #   initconfig()
