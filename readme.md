@@ -1,3 +1,3 @@
 # Readme
 
-Repository storing measurements in correlation with commits and tests.
+Repository of empirical results in correlation with commits and tests.
