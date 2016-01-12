@@ -63,14 +63,8 @@ runpending <- function() {
 
   temp.file <- "temp.csv"
 
-  #compiled <- FALSE
-
   for(i in seq(1,nrow(measurements))) {
     if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
-      #if(!compiled){
-      #  compileimplementations(measurements[i,])
-      #  compiled <- TRUE
-      #}
       measurements[i,] <- runexperiment(measurements[i,], temp.file)
       writemeasurements(measurements)
     }
@@ -127,22 +121,12 @@ switchrevisions <- function(datarow) {
 fetchdependencies <- function() {
   version = "1.5.0-SNAPSHOT"
 
-  # download strategoxt-min
-  res = system2("./mvn-download.sh", args=c(".", "org.metaborg", "strategoxt-jar", version)) == 0
+  res = system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.sunshine2", version, "jar")) == 0
 
-  # download sunshine
-  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.sunshine", version)) == 0
-
-  # download sdf3
-  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.strategoxt.imp.editors.template", version)) == 0
+  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.meta.lang.template", version, "spoofax-language")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Download dependencies failed")
 
-  res = rmfile("target/dependency/sdf3") == 0
-  res = res && system2("mkdir", args=c("-p", "target/dependency/sdf3")) == 0
-  res = res && system2("unzip", args=c("target/dependency/org.strategoxt.imp.editors.template-1.5.0-SNAPSHOT.jar", "-d", "target/dependency/sdf3/")) == 0
-
-  quitonfail(ifelse(res, 0, 1), "Failed to expand SDF3 language")
 }
 
 compileimplementations <- function(datarow) {
@@ -173,13 +157,8 @@ compiledynsem <- function() {
   quitonfail(ifelse(res, 0, 1), "Compilation of interpreter framework failed")
 
   lang.dir = paste(dynsem.repo, "/dynsem", sep="")
-  res = system2("cp", args=c("auxfiles/dynsem-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
-  res = res && system2("cp", args=c("auxfiles/MANIFEST.MF", paste(lang.dir, "/META-INF/MANIFEST.MF", sep=""))) == 0
-  res = res && system2("cp", args=c("auxfiles/GenInterp.java", paste(lang.dir, "/editor/java/dynsem/strategies/GenInterp.java", sep=""))) == 0
 
-  quitonfail(ifelse(res, 0, 1), "Copy failed")
-
-  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
+  res = system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
   quitonfail(ifelse(res, 0, 1), "Clean failed")
   res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "package")) == 0
 
@@ -206,25 +185,19 @@ compilesloracle <- function() {
 compilesldynsem <- function() {
   lang.dir = paste(sl.metaborg.repo, "/org.metaborg.lang.sl", sep="")
   interp.dir = paste(sl.metaborg.repo, "/org.metaborg.lang.sl.interp", sep="")
-  res = system2("cp", args=c("auxfiles/sl-pom.xml", paste(lang.dir, "/pom.xml", sep=""))) == 0
-  res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "clean")) == 0
 
-  sunshineclasspath = c("-jar", "target/dependency/org.metaborg.sunshine-1.5.0-SNAPSHOT.jar")
-  sunshineconf = c("--auto-lang", "target/dependency/sdf3/include", "--non-incremental")
-  sunshineinput = c("--project", lang.dir, "--builder", "\"Generate all files\"", "--build-on-all", "syntax/")
-  res = res && system2("java", args=c(sunshineclasspath, sunshineinput, sunshineconf)) == 0
+  res = system2("./mvn-invoke.sh", args=c(paste(lang.dir), "clean")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "verify")) == 0
 
-  res = res && system2("./mvn-invoke.sh", args=c(paste(lang.dir), "compile")) == 0
   quitonfail(ifelse(res, 0, 1), "Metaborg SL (language) compilation failed")
 
-  dynsem.mainjar = paste(dynsem.repo, "/dynsem/include/ds.jar", sep="")
-  dynsem.javajar = paste(dynsem.repo, "/dynsem/include/ds-java.jar", sep="")
-  classpath = c("-cp", paste("target/dependency/strategoxt-jar-1.5.0-SNAPSHOT.jar", dynsem.mainjar, dynsem.javajar, sep=":"))
-
+  dynsem.proj = paste(dynsem.repo, "/dynsem", sep="")
   sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl/", sep="")
-  sl.metaborg.spec = paste(sl.metaborg.proj, "/trans/semantics/sl.ds", sep="")
 
-  args = c(classpath, "dynsem.strategies.GenInterp", sl.metaborg.spec, sl.metaborg.proj)
+  templatelang = paste("zip://", getwd(), "/target/dependency/org.metaborg.meta.lang.template-1.5.0-SNAPSHOT.spoofax-language", sep="")
+
+  sunshineargs = c("transform", "-l", dynsem.proj, "-l", templatelang, "-p", sl.metaborg.proj , "-n", "\"All to Java\"", "-i", "trans/semantics/sl.ds")
+  args = c("-jar", "target/dependency/org.metaborg.sunshine2-1.5.0-SNAPSHOT.jar", sunshineargs)
 
   res = system2("java", args=args) == 0
 
