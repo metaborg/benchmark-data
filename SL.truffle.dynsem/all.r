@@ -131,10 +131,16 @@ fetchdependencies <- function() {
 
 compileimplementations <- function(datarow) {
   # compile graal implementation
-  compilegraal()
+  if(lastbuiltrev.graal != datarow["GRAALREV"]) {
+    compilegraal()
+    lastbuiltrev.graal <<- datarow["GRAALREV"]
+  }
 
   # compile DynSem
-  compiledynsem()
+  if(lastbuiltrev.dynsem != datarow["DSREV"]) {
+    compiledynsem()
+    lastbuiltrev.dynsem <<- datarow["DSREV"]
+  }
 
   # compile language implementation
   compilevariant(datarow["VARIANT"])

@@ -21,6 +21,9 @@ initconfig <- function() {
   sl.metaborg.path <<- unlist(config[1, "METABORGSLPATH"])
   sl.oracle.path <<- unlist(config[1, "ORACLESLPATH"])
   benchmarks.path <<- unlist(config[1, "BECHMARKPATH"])
+
+  lastbuiltrev.graal <<- -1
+  lastbuiltrev.dynsem <<- -1
 }
 
 initrevs <- function() {
