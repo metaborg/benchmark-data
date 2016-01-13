@@ -112,10 +112,12 @@ switchrevisions <- function(datarow) {
     quitonfail(-1, paste("Unknown implementation variant:", datarow["VARIANT"]))
   }
   # switch DynSem repo
-  switchgitrev(dynsem.repo, unlist(datarow["DSREV"]))
+  if(getgitrev(dynsem.repo) != unlist(datarow["DSREV"])) {
+    switchgitrev(dynsem.repo, unlist(datarow["DSREV"]))
+  }
 
   # switch Graal repo
-  switchgraalrev(graal.repo, mx.repo, unlist(datarow["GRAALREV"]))
+  # switchgraalrev(graal.repo, mx.repo, unlist(datarow["GRAALREV"]))
 }
 
 fetchdependencies <- function() {
@@ -126,15 +128,14 @@ fetchdependencies <- function() {
   res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.meta.lang.template", version, "spoofax-language")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Download dependencies failed")
-
 }
 
 compileimplementations <- function(datarow) {
   # compile graal implementation
-  if(lastbuiltrev.graal != datarow["GRAALREV"]) {
-    compilegraal()
-    lastbuiltrev.graal <<- datarow["GRAALREV"]
-  }
+  # if(lastbuiltrev.graal != datarow["GRAALREV"]) {
+  #   compilegraal()
+  #   lastbuiltrev.graal <<- datarow["GRAALREV"]
+  # }
 
   # compile DynSem
   if(lastbuiltrev.dynsem != datarow["DSREV"]) {
