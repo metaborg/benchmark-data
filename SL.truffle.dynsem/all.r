@@ -207,6 +207,7 @@ compilesldynsem <- function() {
   args = c("-jar", "target/dependency/org.metaborg.sunshine2-1.5.0-SNAPSHOT.jar", sunshineargs)
 
   res = system2("java", args=args) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(paste(sl.metaborg.repo, "/org.metaborg.lang.sl.interp/", sep=""), "compile")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Metaborg SL (interpreter) compilation failed")
 }
