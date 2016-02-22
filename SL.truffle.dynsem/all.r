@@ -262,10 +262,10 @@ compilesldynsem <- function() {
   dynsem.proj = paste(dynsem.repo, "/dynsem", sep="")
   sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl/", sep="")
 
-  templatelang = paste("zip://", getwd(), "/target/dependency/org.metaborg.meta.lang.template-1.5.0-SNAPSHOT.spoofax-language", sep="")
+  templatelang = paste("zip://", getwd(), "/target/dependency/org.metaborg.meta.lang.template.spoofax-language", sep="")
 
   sunshineargs = c("transform", "-l", dynsem.proj, "-l", templatelang, "-p", sl.metaborg.proj , "-n", "\"Generate interpretable\"", "-i", "trans/semantics/sl.ds")
-  args = c("-jar", "target/dependency/org.metaborg.sunshine2-2.0.0-SNAPSHOT.jar", sunshineargs)
+  args = c("-jar", "target/dependency/org.metaborg.sunshine2.jar", sunshineargs)
 
   res = system2("java", args=args) == 0
   res = res && system2("./mvn-invoke.sh", args=c(paste(sl.metaborg.repo, "/org.metaborg.lang.sl.interp/", sep=""), "compile")) == 0

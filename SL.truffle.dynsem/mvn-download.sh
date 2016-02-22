@@ -8,4 +8,4 @@ ARTIFACTID="$3"
 VERSION="$4"
 PACKAGE="$5"
 
-mvn dependency:copy -DoverWrite=true -DartifactId=$ARTIFACTID -DgroupId=$GROUPID -Dartifact=$GROUPID:$ARTIFACTID:$VERSION:$PACKAGE -Dproject.basedir=.
+mvn dependency:copy -Dmdep.stripClassifier=true -Dmdep.stripVersion=true -DoverWrite=true -DartifactId=$ARTIFACTID -DgroupId=$GROUPID -Dartifact=$GROUPID:$ARTIFACTID:$VERSION:$PACKAGE -Dproject.basedir=.
