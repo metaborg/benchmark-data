@@ -216,11 +216,17 @@ compiledynsem <- function() {
 
   quitonfail(ifelse(res, 0, 1), "Compilation of interpreter framework failed")
 
+  metainterp.dir = paste(dynsem.repo, "/org.metaborg.meta.lang.dynsem.interpreter", sep="")
+  res = system2("./mvn-invoke.sh", args=c(metainterp.dir, "clean")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(metainterp.dir, "install")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Compilation of meta-interpreter failed")
+
   lang.dir = paste(dynsem.repo, "/dynsem", sep="")
 
   res = system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
   quitonfail(ifelse(res, 0, 1), "Clean failed")
-  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "package")) == 0
+  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "install")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Compilation of DynSem failed")
 }
