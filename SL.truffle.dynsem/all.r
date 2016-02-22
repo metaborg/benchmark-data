@@ -57,7 +57,7 @@ createdynsemmeasurement <- function() {
 runpending <- function() {
   initconfig()
   initrevs()
-  # fetchdependencies()
+  fetchdependencies()
   measurements <- loadmeasurements()
   benchmarks <- loadbenchmarks()
 
@@ -104,9 +104,6 @@ runexperiment <- function(datarow, temp.file, forcerebuild = FALSE) {
 }
 
 preparecodebases <- function(datarow, forcerebuild = FALSE) {
-  cat("forcebuild: ")
-  cat(forcerebuild, "\n")
-
   ds.switch.required <- getgitrev(dynsem.repo) != unlist(datarow["DSREV"])
   sl.switch.required <- getgitrev(sl.metaborg.repo) != unlist(datarow["VARIANTREV"])
   ds.build.required <- forcerebuild || ds.switch.required
@@ -116,13 +113,11 @@ preparecodebases <- function(datarow, forcerebuild = FALSE) {
 
   # switch DS version
   if(ds.switch.required) {
-    cat("switching dynsem \n")
     switchgitrev(dynsem.repo, unlist(datarow["DSREV"]))
   }
 
   # switch SL version
   if(sl.switch.required) {
-    cat("switching SL \n")
     switchgitrev(sl.metaborg.repo, unlist(datarow["VARIANTREV"]))
   }
 
@@ -133,13 +128,10 @@ preparecodebases <- function(datarow, forcerebuild = FALSE) {
 
   # compile DS
   if(ds.build.required) {
-    cat("building DS \n")
     compiledynsem()
   }
-
   # compile SL
   if(sl.build.required) {
-    cat("building SL \n")
     compilevariant(datarow["VARIANT"])
   }
 
