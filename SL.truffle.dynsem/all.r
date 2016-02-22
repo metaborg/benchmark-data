@@ -57,7 +57,7 @@ createdynsemmeasurement <- function() {
 runpending <- function() {
   initconfig()
   initrevs()
-  fetchdependencies()
+  # fetchdependencies()
   measurements <- loadmeasurements()
   benchmarks <- loadbenchmarks()
 
@@ -94,16 +94,19 @@ runexperiment <- function(datarow, temp.file, forcerebuild = FALSE) {
   # initrevs()
   # compileimplementations(datarow)
 
-  runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
+  # runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
 
-  datarow["GRAALDATA"] = datafile.graal.rel
-  datarow["JDKDATA"] = datafile.jdk.rel
-
-  write.table(datarow, file=temp.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
+  # datarow["GRAALDATA"] = datafile.graal.rel
+  # datarow["JDKDATA"] = datafile.jdk.rel
+  #
+  # write.table(datarow, file=temp.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
   return(datarow)
 }
 
 preparecodebases <- function(datarow, forcerebuild = FALSE) {
+  cat("forcebuild: ")
+  cat(forcerebuild, "\n")
+
   ds.switch.required <- getgitrev(dynsem.repo) != unlist(datarow["DSREV"])
   sl.switch.required <- getgitrev(sl.metaborg.repo) != unlist(datarow["VARIANTREV"])
   ds.build.required <- forcerebuild || ds.switch.required
@@ -113,11 +116,13 @@ preparecodebases <- function(datarow, forcerebuild = FALSE) {
 
   # switch DS version
   if(ds.switch.required) {
+    cat("switching dynsem \n")
     switchgitrev(dynsem.repo, unlist(datarow["DSREV"]))
   }
 
   # switch SL version
   if(sl.switch.required) {
+    cat("switching SL \n")
     switchgitrev(sl.metaborg.repo, unlist(datarow["VARIANTREV"]))
   }
 
@@ -128,52 +133,17 @@ preparecodebases <- function(datarow, forcerebuild = FALSE) {
 
   # compile DS
   if(ds.build.required) {
+    cat("building DS \n")
     compiledynsem()
   }
 
   # compile SL
   if(sl.build.required) {
+    cat("building SL \n")
     compilevariant(datarow["VARIANT"])
   }
 
 }
-
-# sl.metaborg.rev <<- getgitrev(sl.metaborg.repo)
-# sl.oracle.rev <<- getgitrev(sl.oracle.repo)
-# dynsem.rev <<- getgitrev(dynsem.repo)
-# graal.rev <<- gethgrev(graal.repo)
-
-# switchrevisions <- function(datarow) {
-#   variantRebuildRequired <<- FALSE
-#
-#   targetVariantRev <- unlist(datarow["VARIANTREV"])
-#
-#   # switch variant
-#   if(datarow["VARIANT"] == "Oracle") {
-#     if(gethgrev(sl.oracle.repo) != targetVariantRev) {
-#       # switch hg revision
-#       switchgitrev(sl.oracle.repo, targetVariantRev)
-#       variantRebuildRequired <<- TRUE
-#     }
-#   } else if(datarow["VARIANT"] == "DynSem") {
-#     if(getgitrev(sl.metaborg.repo) != targetVariantRev) {
-#       # switch git revision
-#       switchgitrev(sl.metaborg.repo, targetVariantRev)
-#       variantRebuildRequired <<- TRUE
-#     }
-#   } else {
-#     quitonfail(-1, paste("Unknown implementation variant:", datarow["VARIANT"]))
-#   }
-#   # switch DynSem repo
-#   targetDynSemRepo <- unlist(datarow["DSREV"])
-#   if(getgitrev(dynsem.repo) != targetDynSemRepo) {
-#     switchgitrev(dynsem.repo, targetDynSemRepo)
-#     variantRebuildRequired <<- TRUE
-#   }
-#
-#   # switch Graal repo
-#   # switchgraalrev(graal.repo, mx.repo, unlist(datarow["GRAALREV"]))
-# }
 
 fetchdependencies <- function() {
   version = "2.0.0-SNAPSHOT"
@@ -182,25 +152,13 @@ fetchdependencies <- function() {
 
   res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.meta.lang.template", version, "spoofax-language")) == 0
 
-  quitonfail(ifelse(res, 0, 1), "Download dependencies failed")
-}
+  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.meta.lib.analysis", version, "spoofax-language")) == 0
 
-# compileimplementations <- function(datarow) {
-#   # compile graal implementation
-#   # if(lastbuiltrev.graal != datarow["GRAALREV"]) {
-#   #   compilegraal()
-#   #   lastbuiltrev.graal <<- datarow["GRAALREV"]
-#   # }
-#
-#   # compile DynSem
-#   if(lastbuiltrev.dynsem != datarow["DSREV"]) {
-#     compiledynsem()
-#     lastbuiltrev.dynsem <<- datarow["DSREV"]
-#   }
-#
-#   # compile language implementation
-#   compilevariant(datarow["VARIANT"])
-# }
+  res = res && system2("./mvn-download.sh", args=c(".", "org.metaborg", "org.metaborg.meta.lang.esv", version, "spoofax-language")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Download dependencies failed")
+
+}
 
 compilegraal <- function() {
   res = system2("mx", args=c("-p", paste(graal.repo), "clean")) == 0
@@ -263,8 +221,10 @@ compilesldynsem <- function() {
   sl.metaborg.proj = paste(sl.metaborg.repo, "/org.metaborg.lang.sl/", sep="")
 
   templatelang = paste("zip://", getwd(), "/target/dependency/org.metaborg.meta.lang.template.spoofax-language", sep="")
+  analysislang = paste("zip://", getwd(), "/target/dependency/org.metaborg.meta.lib.analysis.spoofax-language", sep="")
+  esvlang = paste("zip://", getwd(), "/target/dependency/org.metaborg.meta.lang.esv.spoofax-language", sep="")
 
-  sunshineargs = c("transform", "-l", dynsem.proj, "-l", templatelang, "-p", sl.metaborg.proj , "-n", "\"Generate interpretable\"", "-i", "trans/semantics/sl.ds")
+  sunshineargs = c("transform", "-l", dynsem.proj, "-l", templatelang, "-l", analysislang, "-l", esvlang, "-p", sl.metaborg.proj , "-n", "\"Generate interpretable\"", "-i", "trans/semantics/sl.ds")
   args = c("-jar", "target/dependency/org.metaborg.sunshine2.jar", sunshineargs)
 
   res = system2("java", args=args) == 0
