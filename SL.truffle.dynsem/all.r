@@ -62,10 +62,12 @@ runpending <- function() {
   benchmarks <- loadbenchmarks()
 
   temp.file <- "temp.csv"
+  firstpass <- TRUE
   for(i in seq(1,nrow(measurements))) {
     if(unlist(measurements[i,"GRAALDATA"]) == "" && unlist(measurements[i,"JDKDATA"]) == ""){
-      measurements[i,] <- runexperiment(measurements[i,], temp.file, i == 1)
+      measurements[i,] <- runexperiment(measurements[i,], temp.file, firstpass)
       writemeasurements(measurements)
+      firstpass <- FALSE
     }
   }
 
