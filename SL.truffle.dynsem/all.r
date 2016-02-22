@@ -107,7 +107,7 @@ preparecodebases <- function(datarow, forcerebuild = FALSE) {
   ds.switch.required <- getgitrev(dynsem.repo) != unlist(datarow["DSREV"])
   sl.switch.required <- getgitrev(sl.metaborg.repo) != unlist(datarow["VARIANTREV"])
   ds.build.required <- forcerebuild || ds.switch.required
-  sl.build.required <- ds.rebuild || sl.switch.required
+  sl.build.required <- ds.build.required || sl.switch.required
 
   # switch versions if needed
 
