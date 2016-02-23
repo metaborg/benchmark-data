@@ -94,12 +94,12 @@ runexperiment <- function(datarow, temp.file, forcerebuild = FALSE) {
   # initrevs()
   # compileimplementations(datarow)
 
-  # runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
+  runres <- system2("./runner.sh", args=c(paste(getvariantpath(datarow["VARIANT"])), inputarg, graaloutarg, jdkoutarg))
 
-  # datarow["GRAALDATA"] = datafile.graal.rel
-  # datarow["JDKDATA"] = datafile.jdk.rel
-  #
-  # write.table(datarow, file=temp.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
+  datarow["GRAALDATA"] = datafile.graal.rel
+  datarow["JDKDATA"] = datafile.jdk.rel
+  
+  write.table(datarow, file=temp.file, quote=FALSE, append=T, row.names=F, col.names=F,  sep=",")
   return(datarow)
 }
 
