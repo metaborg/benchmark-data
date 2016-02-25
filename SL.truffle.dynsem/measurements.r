@@ -21,7 +21,7 @@ aggregatedata <- function() {
     m <- measurements[i,]
     # variantkey <- paste(unlist(m["VARIANT"]), unlist(m["VARIANTREV"]), unlist(m["DSREV"]), unlist(m["GRAALREV"]), sep="-")
 
-    variantkey <- paste(unlist(m["VARIANT"]), unlist(m["VARIANTREV"]), unlist(m["DSREV"]), sep=".")
+    variantkey <- paste(substr(unlist(m["VARIANT"]), 0, 2), substr(unlist(m["VARIANTREV"]), 0, 3), substr(unlist(m["DSREV"]), 0, 3), sep=".")
     benchmarkkey <- paste(unlist(m["BENCHMARK"]))
     graaldata <- read.csv(file=paste(unlist(m["GRAALDATA"])))
     jdkdata <- read.csv(file=paste(unlist(m["JDKDATA"])))
