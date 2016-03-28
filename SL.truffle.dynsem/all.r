@@ -162,6 +162,14 @@ compilegraal <- function() {
 }
 
 compiledynsem <- function() {
+  lang.dir = paste(dynsem.repo, "/dynsem", sep="")
+
+  res = system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
+  quitonfail(ifelse(res, 0, 1), "Clean failed")
+  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "install")) == 0
+
+  quitonfail(ifelse(res, 0, 1), "Compilation of DynSem failed")
+
   framework.dir = paste(dynsem.repo, "/org.metaborg.meta.interpreter.framework", sep="")
   res = system2("./mvn-invoke.sh", args=c(framework.dir, "clean")) == 0
   res = res && system2("./mvn-invoke.sh", args=c(framework.dir, "install")) == 0
@@ -173,14 +181,6 @@ compiledynsem <- function() {
   res = res && system2("./mvn-invoke.sh", args=c(metainterp.dir, "install")) == 0
 
   quitonfail(ifelse(res, 0, 1), "Compilation of meta-interpreter failed")
-
-  lang.dir = paste(dynsem.repo, "/dynsem", sep="")
-
-  res = system2("./mvn-invoke.sh", args=c(lang.dir, "clean")) == 0
-  quitonfail(ifelse(res, 0, 1), "Clean failed")
-  res = res && system2("./mvn-invoke.sh", args=c(lang.dir, "install")) == 0
-
-  quitonfail(ifelse(res, 0, 1), "Compilation of DynSem failed")
 }
 
 compilevariant <- function(variant) {
