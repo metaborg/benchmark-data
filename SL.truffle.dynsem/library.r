@@ -9,26 +9,26 @@ switchgitrev <- function(path, rev) {
   quitonfail(ifelse(res, 0, 1), "Switching Git revision failed")
 }
 
-gethgrev <- function(path) {
-  rev = system2("hg", args=c("-R", paste(path), "id", "-i"), stdout=TRUE)
-  return(rev)
-}
-
-switchhgrev <- function(path, rev) {
-  res = system2("hg", args=c("-R", paste(path), "pull")) == 0
-  res = res && system2("hg", args=c("-R", paste(path), "update", "-r", paste(rev))) == 0
-
-  quitonfail(ifelse(res, 0, 1), "Switching Hg revision failed")
-}
-
-switchgraalrev <- function(graalpath, mxpath, rev) {
-  res = system2("hg", args=c("-R", paste(mxpath), "pull")) == 0
-  res = res && system2("hg", args=c("-R", paste(mxpath), "update")) == 0
-  res = res && system2("mx", args=c("-p", paste(graalpath), "spull")) == 0
-  switchhgrev(graalpath, rev)
-  res = res && system2("mx", args=c("-p", paste(graalpath), "sforceimports")) == 0
-  quitonfail(ifelse(res, 0, 1), paste("Graal switching failed"))
-}
+# gethgrev <- function(path) {
+#   rev = system2("hg", args=c("-R", paste(path), "id", "-i"), stdout=TRUE)
+#   return(rev)
+# }
+#
+# switchhgrev <- function(path, rev) {
+#   res = system2("hg", args=c("-R", paste(path), "pull")) == 0
+#   res = res && system2("hg", args=c("-R", paste(path), "update", "-r", paste(rev))) == 0
+#
+#   quitonfail(ifelse(res, 0, 1), "Switching Hg revision failed")
+# }
+#
+# switchgraalrev <- function(graalpath, mxpath, rev) {
+#   res = system2("hg", args=c("-R", paste(mxpath), "pull")) == 0
+#   res = res && system2("hg", args=c("-R", paste(mxpath), "update")) == 0
+#   res = res && system2("mx", args=c("-p", paste(graalpath), "spull")) == 0
+#   switchhgrev(graalpath, rev)
+#   res = res && system2("mx", args=c("-p", paste(graalpath), "sforceimports")) == 0
+#   quitonfail(ifelse(res, 0, 1), paste("Graal switching failed"))
+# }
 
 quitonfail <- function(exitstatus, msg="Command failed") {
   if(exitstatus != 0) {

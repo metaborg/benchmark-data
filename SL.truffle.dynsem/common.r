@@ -30,7 +30,7 @@ initrevs <- function() {
   sl.metaborg.rev <<- getgitrev(sl.metaborg.repo)
   sl.oracle.rev <<- getgitrev(sl.oracle.repo)
   dynsem.rev <<- getgitrev(dynsem.repo)
-  graal.rev <<- gethgrev(graal.repo)
+  graal.rev <<- getgitrev(graal.repo)
 }
 
 loadbenchmarks <- function() {
