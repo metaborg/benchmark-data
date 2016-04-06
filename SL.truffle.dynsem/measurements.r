@@ -76,7 +76,7 @@ createplot <- function(dataset, warmruns=TRUE) {
   plot <- plot + coord_cartesian(ylim = ylim1 * 1.05)
 
   plot <- plot + xlab("VM Type") + ylab("Time (ms)")
-  plot <- plot + guides(fill=guide_legend(title=NULL,nrow=3,byrow=TRUE))
+  plot <- plot + guides(fill=guide_legend(title=NULL,nrow=4,byrow=TRUE))
   plot <- plot + theme(legend.position="top")
 
   if(warmruns){
