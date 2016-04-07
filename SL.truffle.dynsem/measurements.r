@@ -68,16 +68,20 @@ createplot <- function(dataset, warmruns=TRUE) {
   subset <- dataset[dataset$RUNTYPE == runtype,]
   subset <- dataset[dataset$JVM == "GRAAL",]
 
-  plot <- ggplot(data = subset, aes(x=JVM, y=DURATION))
+  # plot <- ggplot(data = subset, aes(x=VARIANT, y=DURATION))
+  plot <- ggplot(data = subset, aes(x=factor(VARIANT, levels=unique(VARIANT)), y=DURATION))
   plot <- plot + geom_boxplot(aes(fill=VARIANT))
+
+  # plot <- plot + theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+
   plot <- plot + facet_wrap( ~ BENCHMARK, scales = "free")
 
   ylim1 <- boxplot.stats(subset$DURATION)$stats[c(1,5)]
   plot <- plot + coord_cartesian(ylim = ylim1 * 1.05)
 
-  plot <- plot + xlab("VM Type") + ylab("Time (ms)")
+  plot <- plot + xlab("SUT") + ylab("Time (ms)")
   plot <- plot + guides(fill=guide_legend(title=NULL,nrow=4,byrow=TRUE))
-  plot <- plot + theme(legend.position="top")
+  plot <- plot + theme(legend.position="top", axis.ticks = element_blank(), axis.text.x = element_blank())
 
   if(warmruns){
     plot <- plot + ggtitle("Warm runs")
