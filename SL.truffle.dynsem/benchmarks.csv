@@ -2,6 +2,8 @@ BENCHMARKNAME
 Fibonacci-iter.sl
 CallHeavy.sl
 Vars.sl
+VarReads.sl
+VarWrites.sl
 Binary-Trees.sl
 While.sl
 Add.sl
