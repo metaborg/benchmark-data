@@ -80,7 +80,7 @@ createplot <- function(dataset, warmruns=TRUE) {
   plot <- plot + coord_cartesian(ylim = ylim1 * 1.05)
 
   plot <- plot + xlab("SUT") + ylab("Time (ms)")
-  plot <- plot + guides(fill=guide_legend(title=NULL,nrow=4,byrow=TRUE))
+  plot <- plot + guides(fill=guide_legend(title=NULL,nrow=5,byrow=TRUE))
   plot <- plot + theme(legend.position="top", axis.ticks = element_blank(), axis.text.x = element_blank())
 
   if(warmruns){
