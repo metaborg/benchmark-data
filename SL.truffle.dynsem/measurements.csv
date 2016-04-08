@@ -724,5 +724,5 @@ DynSem,7163a8d,faffc47,2c2f1d8,String.sl,data/data_graal_20160408_13591460113188
 DynSem,7163a8d,faffc47,2c2f1d8,Sub.sl,data/data_graal_20160408_13591460113197.csv,data/data_jdk_20160408_13591460113197.csv
 DynSem,7163a8d,faffc47,2c2f1d8,Sum.sl,data/data_graal_20160408_14001460113203.csv,data/data_jdk_20160408_14001460113203.csv
 DynSem,7163a8d,faffc47,2c2f1d8,ControlFlowLoop.sl,data/data_graal_20160408_14001460113210.csv,data/data_jdk_20160408_14001460113210.csv
-DynSem,7163a8d,faffc47,2c2f1d8,VarReads.sl,,
-DynSem,7163a8d,faffc47,2c2f1d8,VarWrites.sl,,
+DynSem,7163a8d,faffc47,2c2f1d8,VarReads.sl,data/data_graal_20160408_14191460114383.csv,data/data_jdk_20160408_14191460114383.csv
+DynSem,7163a8d,faffc47,2c2f1d8,VarWrites.sl,data/data_graal_20160408_14251460114715.csv,data/data_jdk_20160408_14251460114715.csv
